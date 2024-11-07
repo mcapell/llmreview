@@ -1,0 +1,7 @@
+tasks:
+  - name: No prompt
+    models:
+      - openai
+    prompt:
+    data_path: ./data/
+    result_path: ./result/
