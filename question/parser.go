@@ -31,7 +31,7 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 			return nil
 		}
 
-		question, err := ParseQuestionFromFile(path)
+		question, err := parseQuestionFromFile(path)
 		if err != nil {
 			return fmt.Errorf("error parsing question: %w", err)
 		}
@@ -46,7 +46,7 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 	return questions, nil
 }
 
-func ParseQuestionFromFile(path string) (*Question, error) {
+func parseQuestionFromFile(path string) (*Question, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("error opening file: %w", err)
