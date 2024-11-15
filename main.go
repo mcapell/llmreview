@@ -1,18 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"log/slog"
 
-	"github.com/mcapell/llmreview/question"
+	"github.com/mcapell/llmreview/task"
 )
 
 func main() {
-	questions, err := question.ParseQuestionsFromPath("./data/")
-	if err != nil {
-		panic(err)
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+
+	runner := task.NewRunner("./llmreview.yaml")
+
+	if err := runner.Run(); err != nil {
+		slog.Error("error running the task runner", "error", err)
 	}
 
-	for _, q := range questions {
-		fmt.Printf("parsed question: %+v\n", q)
-	}
+	slog.Info("done")
 }
