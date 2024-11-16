@@ -58,7 +58,14 @@ func parseQuestionFromFile(path string) (*Question, error) {
 		return nil, fmt.Errorf("error reading file: %w", err)
 	}
 
-	return parseQuestion(bytes.NewReader(content))
+	question, err := parseQuestion(bytes.NewReader(content))
+	if err != nil {
+		return nil, err
+	}
+
+	question.Path = path
+
+	return question, nil
 }
 
 func parseQuestion(content io.Reader) (*Question, error) {

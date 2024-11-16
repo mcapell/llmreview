@@ -3,6 +3,7 @@ package task
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/mcapell/llmreview/llm"
 	"github.com/mcapell/llmreview/llm/types"
@@ -34,12 +35,20 @@ func (t *Task) Run(ctx context.Context) error {
 		}
 
 		for _, q := range questions {
+			slog.Debug(fmt.Sprintf("processing question: %s", q.Path))
+			if question.ResultExists(t.ResultPath, q) {
+				slog.Debug("result already exist; ignoring question")
+				continue
+			}
+
 			response, err := cli.Chat(ctx, types.Message{Prompt: t.Prompt, Text: q.Text})
 			if err != nil {
 				return fmt.Errorf("error from %s: %w", model, err)
 			}
 
-			fmt.Printf("LLM response: %s\n", response)
+			if err := question.StoreResult(t.ResultPath, q, response); err != nil {
+				return fmt.Errorf("error storing result: %w", err)
+			}
 		}
 	}
 
