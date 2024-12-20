@@ -35,7 +35,7 @@ func (t *Task) Run(ctx context.Context) error {
 		}
 
 		for _, q := range questions {
-			slog.Debug(fmt.Sprintf("processing question: %s", q.Path))
+			slog.Debug(fmt.Sprintf("processing question: %s using model %s", q.Path, cli))
 			if question.ResultExists(t.ResultPath, q) {
 				slog.Debug("result already exist; ignoring question")
 				continue

@@ -1,8 +1,15 @@
 package question
 
 type Question struct {
-	Path     string
-	Metadata map[string]string
-	Text     string
-	Solution string
+	Path           string
+	QuestionType   InputType
+	CorrectionType InputType
+	Text           string
+	Correction     string
 }
+
+type InputType string
+
+const (
+	InputText InputType = "text"
+)

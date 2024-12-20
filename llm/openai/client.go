@@ -44,15 +44,21 @@ type ChatResponse struct {
 }
 
 type Client struct {
+	model       string
 	apiKey      string
 	temperature float64
 }
 
 func NewClient(apiKey string) *Client {
 	return &Client{
+		model:       "gpt-4o-mini",
 		apiKey:      apiKey,
 		temperature: defaultTemperature,
 	}
+}
+
+func (c *Client) String() string {
+	return fmt.Sprintf("%s - temperature: %0.1f", c.model, c.temperature)
 }
 
 func (c *Client) Chat(ctx context.Context, msg types.Message) (string, error) {
@@ -67,9 +73,9 @@ func (c *Client) Chat(ctx context.Context, msg types.Message) (string, error) {
 	}
 
 	payload := ChatRequest{
-		Model:               "gpt-4o-mini",
+		Model:               c.model,
 		Messages:            messages,
-		Temperature:         defaultTemperature,
+		Temperature:         c.temperature,
 		MaxCompletionTokens: defaultMaxCompletionTokens,
 		NumberOfChats:       defaultNumberOfChatCompletions,
 	}

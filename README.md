@@ -16,9 +16,32 @@ tasks:
   - name: No prompt
     models:
       - openai
-    prompt: 
+    prompt:
     data_path: ./data/
     result_path: ./result/
 ```
 
-Data files will be recursively parsed, and results will be stored in the result path following the same directory structure.
+
+Data files are processed recursively, and the results are saved in the designated result path while maintaining the same directory structure.
+
+If you provide correction files, they will be utilized to evaluate the output's performance. Corrections should be separate files,
+appended with the "_correction" suffix in the filename. Additionally, a file with the "_grade" suffix will be generated as part of the output.
+
+File structure example based on the previous task definition:
+
+```
+./data/
+  |-- catalan_1.pdf
+  |-- catalan_1_correction.pdf
+  `-- catalan_2.txt                # this file doesn't have a correction
+./result/
+  |-- catalan_1_openai.txt         # output of the openai LLM
+  |-- catalan_1_openai_grade.txt   # grade of the previous result
+  `-- catalan_2_openai.txt         # this file won't have a correction, as no correction was provided
+```
+
+## Roadmap
+
+- [ ] Load corrections when available. Define how to support it on the schema.
+- [ ] Evaluate results using another LLM and how to grade it.
+- [ ] Support for PDF inputs.
