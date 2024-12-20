@@ -12,6 +12,7 @@ import (
 
 const (
 	correctionSuffix = "_correction"
+	gradeSuffix      = "_grade"
 )
 
 var (
@@ -37,17 +38,15 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 		}
 
 		// Only process question files, and create the correction file based on the original name
-		var questionPath, correctionPath string
+		var questionPath, corrPath string
 		if !strings.Contains(path, correctionSuffix) {
 			questionPath = path
+			corrPath = addPathSuffix(path, correctionSuffix)
 			filesParsed[questionPath] = true
-			if lastN := strings.LastIndex(path, "."); lastN != -1 {
-				correctionPath = path[:lastN] + correctionSuffix + path[lastN:]
-				filesParsed[correctionPath] = true
-			}
+			filesParsed[corrPath] = true
 		}
 
-		fmt.Printf("question path: %s - correction path: %s\n", questionPath, correctionPath)
+		fmt.Printf("question path: %s - correction path: %s\n", questionPath, corrPath)
 
 		question := Question{
 			Path:         path,
@@ -62,7 +61,7 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 		question.Text = questionInput
 
 		// Correction is optional. Add only if the file exist
-		correctionInput, err := parseText(correctionPath)
+		correctionInput, err := parseText(corrPath)
 		if err != nil && !errors.Is(err, FileNotFoundErr) {
 			return fmt.Errorf("error parsing question: %w", err)
 		} else if err == nil {
