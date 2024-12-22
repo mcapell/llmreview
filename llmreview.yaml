@@ -3,5 +3,5 @@ tasks:
     models:
       - openai
     prompt:
-    data_path: ./data/
-    result_path: ./result/
+    data_path: ../llmreview-data/data/
+    result_path: ../llmreview-data/result/

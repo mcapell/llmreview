@@ -82,7 +82,7 @@ func (t *Task) getResult(ctx context.Context, cli llm.Client, q question.Questio
 		return t.loadResult(q.QuestionPath()), nil
 	}
 
-	response, err := cli.Chat(ctx, types.Message{Prompt: t.Prompt, Text: q.Text})
+	response, err := cli.Chat(ctx, []types.Message{{Prompt: t.Prompt, Text: q.Text}})
 	if err != nil {
 		return "", fmt.Errorf("error from %s: %w", cli, err)
 	}
@@ -105,7 +105,7 @@ func (t *Task) gradeResult(ctx context.Context, cli llm.Client, q question.Quest
 		return nil
 	}
 
-	response, err := cli.Chat(ctx, types.Message{Prompt: gradingPrompt + q.Correction, Text: result})
+	response, err := cli.Chat(ctx, []types.Message{{Prompt: gradingPrompt + q.Correction, Text: result}})
 	if err != nil {
 		return fmt.Errorf("error from %s: %w", cli, err)
 	}

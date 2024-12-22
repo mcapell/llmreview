@@ -61,16 +61,18 @@ func (c *Client) String() string {
 	return fmt.Sprintf("%s - temperature: %0.1f", c.model, c.temperature)
 }
 
-func (c *Client) Chat(ctx context.Context, msg types.Message) (string, error) {
+func (c *Client) Chat(ctx context.Context, msgs []types.Message) (string, error) {
 	url := "https://api.openai.com/v1/chat/completions"
 
 	messages := []ChatMessage{}
 
-	if msg.Prompt != "" {
-		messages = append(messages, ChatMessage{Content: msg.Prompt, Role: "system"})
-	}
+	for _, msg := range msgs {
+		if msg.Prompt != "" {
+			messages = append(messages, ChatMessage{Content: msg.Prompt, Role: "system"})
+		}
 
-	messages = append(messages, ChatMessage{Content: msg.Text, Role: "user"})
+		messages = append(messages, ChatMessage{Content: msg.Text, Role: "user"})
+	}
 
 	payload := ChatRequest{
 		Model:               c.model,
