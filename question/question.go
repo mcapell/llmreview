@@ -25,6 +25,10 @@ func (q *Question) QuestionPath() string {
 	return q.Path
 }
 
+func (q *Question) ResultPath() string {
+	return changeExtension(q.Path, "md")
+}
+
 func (q *Question) CorrectionPath() string {
 	return addPathSuffix(q.Path, correctionSuffix)
 }

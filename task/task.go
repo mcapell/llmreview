@@ -76,10 +76,10 @@ func (t *Task) Run(ctx context.Context) error {
 }
 
 func (t *Task) getResult(ctx context.Context, cli llm.Client, q question.Question) (string, error) {
-	if t.resultExist(q.QuestionPath()) {
+	if t.resultExist(q.ResultPath()) {
 		slog.Debug("result already exist; loading it")
 
-		return t.loadResult(q.QuestionPath()), nil
+		return t.loadResult(q.ResultPath()), nil
 	}
 
 	response, err := cli.Chat(ctx, t.Prompt, []types.Message{{Content: q.Content}})
@@ -87,7 +87,7 @@ func (t *Task) getResult(ctx context.Context, cli llm.Client, q question.Questio
 		return "", fmt.Errorf("error from %s: %w", cli, err)
 	}
 
-	if err := t.storeResult(q.QuestionPath(), response); err != nil {
+	if err := t.storeResult(q.ResultPath(), response); err != nil {
 		return "", fmt.Errorf("error storing result: %w", err)
 	}
 

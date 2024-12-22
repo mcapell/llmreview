@@ -64,4 +64,5 @@ Return the grading results as a JSON object, without any formatting, using this 
 }
 
 
-Correction notes:
+Use the following solutions and correction notes to evaluate the result. If the result does not match the correction, consider it wrong.
+

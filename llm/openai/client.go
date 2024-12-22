@@ -77,7 +77,6 @@ func (c *Client) Chat(ctx context.Context, prompt string, msgs []types.Message) 
 	}
 
 	for _, msg := range msgs {
-
 		for _, c := range msg.Content {
 			for _, img := range c.Images {
 				messages = append(messages, ChatMessage{Role: "user", Content: ContentImage{
