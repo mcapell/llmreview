@@ -13,6 +13,7 @@ import (
 	"github.com/mcapell/llmreview/llm/types"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
+	"golang.org/x/exp/slog"
 )
 
 const (
@@ -24,11 +25,11 @@ var (
 	FileNotFoundErr = errors.New("file not found")
 )
 
-func ParseQuestionsFromPath(path string) ([]Question, error) {
+func ParseQuestionsFromPath(dataPath string) ([]Question, error) {
 	var questions []Question
 	filesParsed := map[string]bool{}
 
-	if err := filepath.WalkDir(path, func(path string, d fs.DirEntry, err error) error {
+	if err := filepath.WalkDir(dataPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -51,9 +52,11 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 			filesParsed[corrPath] = true
 		}
 
-		fmt.Printf("question path: %s - correction path: %s\n", questionPath, corrPath)
+		slog.Debug(fmt.Sprintf("question path: %s - correction path: %s\n", questionPath, corrPath))
 
-		question := Question{}
+		question := Question{
+			Path: strings.TrimPrefix(path, dataPath),
+		}
 
 		if err := loadQuestionContent(path, &question); err != nil {
 			return fmt.Errorf("error parsing question content: %w", err)
@@ -78,8 +81,6 @@ func ParseQuestionsFromPath(path string) ([]Question, error) {
 }
 
 func loadQuestionContent(path string, question *Question) error {
-	question.Path = path
-
 	if strings.HasSuffix(path, "md") || strings.HasSuffix(path, "txt") {
 		question.QuestionType = InputText
 		questionInput, err := parseText(path)
@@ -96,7 +97,6 @@ func loadQuestionContent(path string, question *Question) error {
 		}
 
 		question.Content = questionInput
-		fmt.Printf("PDF content: %v\n", questionInput)
 	} else {
 		return fmt.Errorf("unsupported question format")
 	}
