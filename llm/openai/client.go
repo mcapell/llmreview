@@ -64,13 +64,13 @@ func (c *Client) String() string {
 func (c *Client) Chat(ctx context.Context, msg types.Message) (string, error) {
 	url := "https://api.openai.com/v1/chat/completions"
 
-	messages := []ChatMessage{
-		{Content: msg.Text, Role: "user"},
-	}
+	messages := []ChatMessage{}
 
 	if msg.Prompt != "" {
 		messages = append(messages, ChatMessage{Content: msg.Prompt, Role: "system"})
 	}
+
+	messages = append(messages, ChatMessage{Content: msg.Text, Role: "user"})
 
 	payload := ChatRequest{
 		Model:               c.model,
