@@ -1,18 +1,23 @@
 package question
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/mcapell/llmreview/llm/types"
+)
 
 type InputType string
 
 const (
 	InputText InputType = "text"
+	InputPDF  InputType = "pdf"
 )
 
 type Question struct {
 	Path           string
 	QuestionType   InputType
 	CorrectionType InputType
-	Text           string
+	Content        []types.Content
 	Correction     string
 }
 

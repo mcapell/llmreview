@@ -3,6 +3,7 @@ package openai
 import (
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,8 +27,13 @@ type ChatRequest struct {
 }
 
 type ChatMessage struct {
-	Content string `json:"content"`
+	Content any    `json:"content"`
 	Role    string `json:"role"`
+}
+
+type ContentImage struct {
+	Type     string `json:"type"`
+	ImageURL string `json:"image_url"`
 }
 
 type ChatResponse struct {
@@ -61,17 +67,26 @@ func (c *Client) String() string {
 	return fmt.Sprintf("%s - temperature: %0.1f", c.model, c.temperature)
 }
 
-func (c *Client) Chat(ctx context.Context, msgs []types.Message) (string, error) {
+func (c *Client) Chat(ctx context.Context, prompt string, msgs []types.Message) (string, error) {
 	url := "https://api.openai.com/v1/chat/completions"
 
 	messages := []ChatMessage{}
 
-	for _, msg := range msgs {
-		if msg.Prompt != "" {
-			messages = append(messages, ChatMessage{Content: msg.Prompt, Role: "system"})
-		}
+	if prompt != "" {
+		messages = append(messages, ChatMessage{Content: prompt, Role: "system"})
+	}
 
-		messages = append(messages, ChatMessage{Content: msg.Text, Role: "user"})
+	for _, msg := range msgs {
+
+		for _, c := range msg.Content {
+			for _, img := range c.Images {
+				messages = append(messages, ChatMessage{Role: "user", Content: ContentImage{
+					Type:     "image_url",
+					ImageURL: base64.RawStdEncoding.EncodeToString(img),
+				}})
+			}
+			messages = append(messages, ChatMessage{Content: c.Text, Role: "user"})
+		}
 	}
 
 	payload := ChatRequest{

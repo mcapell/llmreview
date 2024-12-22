@@ -1,6 +1,10 @@
 package types
 
 type Message struct {
-	Prompt string
+	Content []Content
+}
+
+type Content struct {
 	Text   string
+	Images [][]byte
 }

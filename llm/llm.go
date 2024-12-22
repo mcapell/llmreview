@@ -14,7 +14,7 @@ var (
 )
 
 type Client interface {
-	Chat(ctx context.Context, msgs []types.Message) (string, error)
+	Chat(ctx context.Context, prompt string, msgs []types.Message) (string, error)
 }
 
 func New(model string) (Client, error) {
