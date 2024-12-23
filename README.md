@@ -42,6 +42,5 @@ File structure example based on the previous task definition:
 
 ## Roadmap
 
-- [ ] Load corrections when available. Define how to support it on the schema.
-- [ ] Evaluate results using another LLM and how to grade it.
-- [ ] Support for PDF inputs.
+- [ ] Support various models for assessment and grading.
+- [ ] Refactor code to simplify the architecture.
